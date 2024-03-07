@@ -1,0 +1,63 @@
+version: '3.9'
+networks:
+  t2_proxy:
+    name: t2_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.90.0/24
+
+x-common-keys-core: &common-keys-core
+  networks:
+    - t2_proxy
+  security_opt:
+    - no-new-privileges:true
+  restart: always
+
+services:
+
+  ts-node-docker:
+    <<: *common-keys-core
+    container_name: aicoches-auth
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/home/node/app/src
+      - ./nodemon.json:/home/node/app/nodemon.json
+    expose:
+      - '3000'
+    ports:
+      - '3000'
+    command: node build/index.js
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.aicoches-auth.rule=Host(`aicoches-auth.iacoches.ai`)"
+      - "traefik.http.routers.aicoches-auth.entrypoints=websecure"
+      # If you want to enable SSL, uncomment the following line.
+      # - "traefik.http.routers.aicoches-auth.tls.certresolver=apgauth"
+
+  # ts-node-dev-docker:
+  #   <<: *common-keys-core
+  #   container_name: apg-auth-dev
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./src:/home/node/app/src
+  #     - ./nodemon.json:/home/node/app/nodemon.json
+  #   expose:
+  #     - '5000'
+  #   ports:
+  #     - '5000'
+  #   command: node build/index.js
+  #   env_file:
+  #     - .env
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.apg-auth-dev.rule=Host(`authdev.apg.gg`)"
+  #     - "traefik.http.routers.apg-auth-dev.entrypoints=websecure"
+  #     # If you want to enable SSL, uncomment the following line.
+  #     - "traefik.http.routers.apg-auth-dev.tls.certresolver=apgauthdev"    

@@ -1,0 +1,82 @@
+import express from 'express';
+import session from 'express-session';
+import * as dotenv from 'dotenv';
+import passport from 'passport';
+import bodyParser from 'body-parser';
+import { generateToken } from './utils/generate-token';
+import { configurePassportGoogle } from './config/passport-google';
+
+dotenv.config();
+
+const app = express();
+
+const expirationTime = new Date();
+expirationTime.setDate(expirationTime.getDate() + 30);
+
+app.use(session({
+  secret: `${process.env.COOKIE_SECRET}`,
+  resave: false,
+	saveUninitialized: true,
+	cookie: {
+		sameSite: 'none'
+	}
+}));
+
+configurePassportGoogle(passport);
+
+passport.serializeUser(function (user: any, done: any) {
+	done(null, user);
+});
+
+passport.deserializeUser(function (user: any, done: any) {
+	done(null, user);
+});
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.json());
+
+// app.use(cors({
+//   origin: `${process.env.DOMAIN_URL}`, // Especifica el origen permitido
+// 	credentials: true,
+//   exposedHeaders: ['iacoches_auth_token']
+// }));
+
+app.get('/google', passport.authenticate('google', { scope: ['email','profile'], accessType: 'offline', includeGrantedScopes: true, prompt: 'select_account' }));
+
+app.head('/google/callback', passport.authenticate('google', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
+	async (req: any, res: any) => {
+		const user = req.user;
+
+		const token = generateToken({
+			id: user.id
+		});
+
+		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+	}
+);
+
+app.get('/google/callback', passport.authenticate('google', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
+  async (req: any, res: any) => {
+		const user = req.user;
+
+		const token = generateToken({
+			id: user.id
+		});
+
+    res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+  }
+);
+
+app.get('/ping', (req, res) => {
+	res.send('pong');
+});
+
+app.get('/', (req, res) => {
+	res.send({
+		message: 'Qué mirás, bobo, andá pa allá'
+	});
+});
+
+app.listen(process.env.DEFAULT_PORT, () => {});
