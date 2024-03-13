@@ -27,7 +27,7 @@ export function configurePassportGoogle(passport: any) {
         // if user is not registered, will return google user data and pre save it
         if (!userData) {
           // check if email is already used
-          const userWithEmail = await GeneralEndpoints.getUserLoginByEmail(profile.email);
+          const userWithEmail = await GeneralEndpoints.getUserLoginByEmail(profile._json.email);
 
           // if email is already used, will redirect to link account page
           if (userWithEmail) {
