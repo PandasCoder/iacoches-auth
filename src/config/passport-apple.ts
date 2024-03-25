@@ -17,73 +17,73 @@ export function configurePassportApple(passport: any) {
 				passReqToCallback: true
       },
       async (req, accessToken, refreshToken, idToken, profile, done) => {
-				console.log(profile);
-        const userApple: UserTemp = {
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-          providerId: profile.id,
-          name: profile._json.given_name,
-          lastname: profile._json.family_name,
-          email: profile._json.email,
-          verify: profile._json.email_verified,
-          loginProvider: 'apple'
-        };
+				console.log(req.body);
+        // const userApple: UserTemp = {
+        //   accessToken: accessToken,
+        //   refreshToken: refreshToken,
+        //   providerId: req.body.id,
+        //   name: req.body.name,
+        //   lastname: profile._json.family_name,
+        //   email: profile._json.email,
+        //   verify: profile._json.email_verified,
+        //   loginProvider: 'apple'
+        // };
 
-        const userData = await GeneralEndpoints.getUserByProvider({ loginProviderId: LOGIN_PROVIDERS.APPLE, providerId: profile.id});
-        // if user is not registered, will return google user data and pre save it
-        if (!userData) {
-          // check if email is already used
-          const userWithEmail = await GeneralEndpoints.getUserLoginByEmail(profile._json.email);
+        // const userData = await GeneralEndpoints.getUserByProvider({ loginProviderId: LOGIN_PROVIDERS.APPLE, providerId: profile.id});
+        // // if user is not registered, will return google user data and pre save it
+        // if (!userData) {
+        //   // check if email is already used
+        //   const userWithEmail = await GeneralEndpoints.getUserLoginByEmail(profile._json.email);
 
-          // if email is already used, will redirect to link account page
-          if (userWithEmail) {
-            const newUserLogin = await GeneralEndpoints.createUserLogin({ 
-              userId: userWithEmail.userId,
-              email: userWithEmail.email,
-              providerId: userApple.providerId,
-              loginProviderId: LOGIN_PROVIDERS.APPLE,
-              accessToken,
-              refreshToken
-            });
+        //   // if email is already used, will redirect to link account page
+        //   if (userWithEmail) {
+        //     const newUserLogin = await GeneralEndpoints.createUserLogin({ 
+        //       userId: userWithEmail.userId,
+        //       email: userWithEmail.email,
+        //       providerId: userApple.providerId,
+        //       loginProviderId: LOGIN_PROVIDERS.APPLE,
+        //       accessToken,
+        //       refreshToken
+        //     });
       
-            if (!newUserLogin) {
-              return done(null, { 
-                error: true,
-                code: 5000,
-                message: 'Error while signing up'
-              });
-            }
+        //     if (!newUserLogin) {
+        //       return done(null, { 
+        //         error: true,
+        //         code: 5000,
+        //         message: 'Error while signing up'
+        //       });
+        //     }
 
-            return done(null, { id: userWithEmail.userId });
-          }
+        //     return done(null, { id: userWithEmail.userId });
+        //   }
 
-          const newUser = await GeneralEndpoints.createUser({ 
-            name: userApple.name,
-            lastname: userApple.lastname,
-            email: userApple.email
-          });
+        //   const newUser = await GeneralEndpoints.createUser({ 
+        //     name: userApple.name,
+        //     lastname: userApple.lastname,
+        //     email: userApple.email
+        //   });
 
-          const newUserLogin = await GeneralEndpoints.createUserLogin({ 
-            userId: newUser.id,
-            email: newUser.email,
-            providerId: userApple.providerId,
-            loginProviderId: LOGIN_PROVIDERS.APPLE,
-            accessToken,
-            refreshToken
-          });
+        //   const newUserLogin = await GeneralEndpoints.createUserLogin({ 
+        //     userId: newUser.id,
+        //     email: newUser.email,
+        //     providerId: userApple.providerId,
+        //     loginProviderId: LOGIN_PROVIDERS.APPLE,
+        //     accessToken,
+        //     refreshToken
+        //   });
           
-          if (!newUserLogin) {
-            return done(null, { 
-              error: true,
-              code: 5000,
-              message: 'Error while signing up'
-            });
-          }
+        //   if (!newUserLogin) {
+        //     return done(null, { 
+        //       error: true,
+        //       code: 5000,
+        //       message: 'Error while signing up'
+        //     });
+        //   }
 
-          return done(null, { id: newUserLogin.userId });
-        }
+        //   return done(null, { id: newUserLogin.userId });
+        // }
 
-        return done(null, { id: userData.userId });
+        // return done(null, { id: userData.userId });
       }
     )
   );
