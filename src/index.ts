@@ -59,19 +59,22 @@ app.head('/apple/callback', passport.authenticate('apple', {failureRedirect: `${
 	}
 );
 
-app.post('/apple/callback', passport.authenticate('apple', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
-	async (req: any, res: any) => {
-		const user = req.body.user;
+app.post('/apple/callback', function (req, res, next){
+	passport.authenticate('apple', 
+		function (err: any, user:any, info:any) {
+			// const user = req.body.user;
 
-		console.log(req)
+			console.log(user)
+			console.log(info)
+			console.log(req)
 
-		// const token = generateToken({
-		// 	id: user.id
-		// });
+			// const token = generateToken({
+			// 	id: user.id
+			// });
 
-		// res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
-	}
-);
+			// res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+		}
+)});
 
 app.get('/google', passport.authenticate('google', { scope: ['email','profile'], accessType: 'offline', includeGrantedScopes: true, prompt: 'select_account' }));
 
