@@ -61,13 +61,15 @@ app.head('/apple/callback', passport.authenticate('apple', {failureRedirect: `${
 
 app.post('/apple/callback', passport.authenticate('apple', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
 	async (req: any, res: any) => {
-		const user = req.user;
+		const user = req.body.user;
 
-		const token = generateToken({
-			id: user.id
-		});
+		console.log(user)
 
-		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+		// const token = generateToken({
+		// 	id: user.id
+		// });
+
+		// res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
 	}
 );
 
