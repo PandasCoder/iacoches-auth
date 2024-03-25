@@ -61,9 +61,9 @@ app.head('/apple/callback', passport.authenticate('apple', {failureRedirect: `${
 
 app.post('/apple/callback', passport.authenticate('apple',
 	async (req: any, res: any) => {
-		const user = req.body.user;
+		//const user = req.body.user;
 
-		console.log(req.body)
+		console.log(req)
 
 		// const token = generateToken({
 		// 	id: user.id
