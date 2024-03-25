@@ -4,6 +4,7 @@ import { GeneralEndpoints } from "../api/general.endpoints";
 import { LOGIN_PROVIDERS } from '../domain/login-providers.enum';
 import fs from 'fs'
 import path from 'path';
+import { parseJwt } from '../utils/generate-token';
 
 export function configurePassportApple(passport: any) {
   passport.use(
@@ -17,15 +18,17 @@ export function configurePassportApple(passport: any) {
 				passReqToCallback: true
       },
       async (req, accessToken, refreshToken, idToken, profile, done) => {
-				console.log(req.body);
+				
 				// console.log(profile);
 				// console.log(accessToken);
 				// console.log(refreshToken);
 
+				const email = parseJwt(idToken);
+				console.log(email);
         // const userApple: UserTemp = {
         //   accessToken: accessToken,
         //   refreshToken: refreshToken,
-        //   providerId: req.body.id,
+        //   providerId: email.email,
         //   name: req.body.name,
         //   lastname: profile._json.family_name,
         //   email: profile._json.email,
