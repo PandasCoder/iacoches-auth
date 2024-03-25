@@ -10,3 +10,7 @@ export const generateToken = ({ id }: { id: string }): string => {
 
   return jwt.sign(payload, `${process.env.JWT_SECRET}`, { algorithm: 'RS512', expiresIn: '30d' });
 }
+
+export const parseJwt = (token:string) => {
+  return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+}
