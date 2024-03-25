@@ -5,6 +5,7 @@ import passport from 'passport';
 import bodyParser from 'body-parser';
 import { generateToken } from './utils/generate-token';
 import { configurePassportGoogle } from './config/passport-google';
+import { configurePassportApple } from './config/passport-apple';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(session({
 }));
 
 configurePassportGoogle(passport);
+configurePassportApple(passport);
 
 passport.serializeUser(function (user: any, done: any) {
 	done(null, user);
@@ -42,6 +44,32 @@ app.use(express.json());
 // 	credentials: true,
 //   exposedHeaders: ['iacoches_auth_token']
 // }));
+
+app.get('/apple', passport.authenticate('apple'));
+
+app.head('/apple/callback', passport.authenticate('apple', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
+	async (req: any, res: any) => {
+		const user = req.user;
+
+		const token = generateToken({
+			id: user.id
+		});
+
+		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+	}
+);
+
+app.get('/apple/callback', passport.authenticate('apple', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
+	async (req: any, res: any) => {
+		const user = req.user;
+
+		const token = generateToken({
+			id: user.id
+		});
+
+		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+	}
+);
 
 app.get('/google', passport.authenticate('google', { scope: ['email','profile'], accessType: 'offline', includeGrantedScopes: true, prompt: 'select_account' }));
 
