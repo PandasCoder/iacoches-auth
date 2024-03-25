@@ -17,7 +17,12 @@ export function configurePassportApple(passport: any) {
 				passReqToCallback: true
       },
       async (req, accessToken, refreshToken, idToken, profile, done) => {
-				console.log(req.body.user);
+				console.log(idToken);
+				console.log(profile);
+				console.log(accessToken);
+				console.log(refreshToken);
+				console.log(req);
+
         // const userApple: UserTemp = {
         //   accessToken: accessToken,
         //   refreshToken: refreshToken,
