@@ -18,6 +18,8 @@ export function configurePassportApple(passport: any) {
       },
       async (req, accessToken, refreshToken, idToken, profile, done) => {
 
+				console.log(profile)
+				
         // const userApple: UserTemp = {
         //   accessToken: accessToken,
         //   refreshToken: refreshToken,
