@@ -18,13 +18,8 @@ export function configurePassportApple(passport: any) {
 				passReqToCallback: true
       },
       async (req, accessToken, refreshToken, idToken, profile, done) => {
-				
-				console.log(req.body.user);
-				// console.log(accessToken);
-				// console.log(refreshToken);
-				
-				const user = parseJwt(idToken);
-        
+								
+				const user = parseJwt(idToken);        
 
         const userData = await GeneralEndpoints.getUserByProvider({ loginProviderId: LOGIN_PROVIDERS.APPLE, providerId: user.sub});
         // if user is not registered, will return google user data and pre save it
