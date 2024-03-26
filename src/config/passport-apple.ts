@@ -22,7 +22,7 @@ export function configurePassportApple(passport: any) {
 				console.log(req.body.user);
 				// console.log(accessToken);
 				// console.log(refreshToken);
-
+				
 				const user = parseJwt(idToken);
         
 
@@ -54,9 +54,11 @@ export function configurePassportApple(passport: any) {
             return done(null, { id: userWithEmail.userId });
           }
 
+					profile = JSON.parse(req.body.user);
+
           const newUser = await GeneralEndpoints.createUser({ 
-            name: req.body.user.name.firstName,
-            lastname: req.body.user.name.lastName,
+            name: profile.name.firstName,
+            lastname: profile.name.lastName,
             email: user.email
           });
 
