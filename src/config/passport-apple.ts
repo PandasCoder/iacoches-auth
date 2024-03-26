@@ -19,7 +19,7 @@ export function configurePassportApple(passport: any) {
       },
       async (req, accessToken, refreshToken, idToken, profile, done) => {
 				
-				// console.log(profile);
+				console.log(req.body.user);
 				// console.log(accessToken);
 				// console.log(refreshToken);
 
