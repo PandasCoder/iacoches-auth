@@ -6,6 +6,8 @@ import bodyParser from 'body-parser';
 import { generateToken } from './utils/generate-token';
 import { configurePassportGoogle } from './config/passport-google';
 import { configurePassportApple } from './config/passport-apple';
+import { GeneralEndpoints, GetByProvider } from './api/general.endpoints';
+import { LOGIN_PROVIDERS } from './domain/login-providers.enum';
 
 dotenv.config();
 
@@ -97,6 +99,24 @@ app.get('/google/callback', passport.authenticate('google', {failureRedirect: `$
     res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
   }
 );
+
+app.post('/apple/getToken',
+	async(req: any, res: any) => {
+		
+		const userId = req.userId;
+		const appleObject: GetByProvider = {
+			loginProviderId: LOGIN_PROVIDERS.APPLE,
+			providerId: userId
+		}
+		const user = await GeneralEndpoints.getUserByProvider(appleObject);
+
+		const token = generateToken({
+			id: user.id
+		})
+
+		res.response(token);
+	}
+)
 
 app.get('/ping', (req, res) => {
 	res.send('pong');

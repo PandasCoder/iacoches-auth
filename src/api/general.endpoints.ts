@@ -10,7 +10,7 @@ export interface RequestError {
   message: string
 }
 
-interface GetByProvider {
+export interface GetByProvider {
   loginProviderId: LOGIN_PROVIDERS,
   providerId?: string,
   email?: string
