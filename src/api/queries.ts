@@ -1,7 +1,20 @@
 export const operationGetUser = `
   query GetUserLogin($where: user_providers_bool_exp) {
     logins: user_providers(where: $where) {
+      id
       userId
+      email
+      providerId
+      loginProviderId
+      user {
+        id
+        email
+        name
+      }
+      loginProvider {
+        id
+        provider
+      }
     }
   }
 `;
