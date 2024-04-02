@@ -104,19 +104,22 @@ app.post('/apple/getToken',
 	async(req: any, res: any) => {
 
 		const userId = req.body.userId;
-		
-		const appleObject: GetByProvider = {
-			loginProviderId: LOGIN_PROVIDERS.APPLE,
-			providerId: userId
-		}
-		
-		const user = await GeneralEndpoints.getUserByProvider(appleObject);
-		
-		const token = generateToken({
-			id: user.userId
-		})
+		if(userId){
 
-		res.send(token);
+			const appleObject: GetByProvider = {
+				loginProviderId: LOGIN_PROVIDERS.APPLE,
+				providerId: userId
+			}
+			
+			const user = await GeneralEndpoints.getUserByProvider(appleObject);
+			
+			const token = generateToken({
+				id: user.userId
+			})
+	
+			res.send(token);
+		}
+		res.send('pong');
 	}
 )
 
