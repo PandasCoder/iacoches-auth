@@ -111,9 +111,9 @@ app.post('/apple/getToken',
 		}
 		
 		const user = await GeneralEndpoints.getUserByProvider(appleObject);
-
+		
 		const token = generateToken({
-			id: user.id
+			id: user.userId
 		})
 
 		res.send(token);
