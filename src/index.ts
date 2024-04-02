@@ -49,17 +49,17 @@ app.use(express.json());
 
 app.get('/apple', passport.authenticate('apple'));
 
-app.head('/apple/callback', passport.authenticate('apple', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
-	async (req: any, res: any) => {
-		const user = req.user;
+// app.head('/apple/callback', passport.authenticate('apple', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
+// 	async (req: any, res: any) => {
+// 		const user = req.user;
 
-		const token = generateToken({
-			id: user.id
-		});
+// 		const token = generateToken({
+// 			id: user.id
+// 		});
 
-		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
-	}
-);
+// 		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+// 	}
+// );
 
 app.post('/apple/callback', passport.authenticate('apple', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
 	async (req: any, res: any) => {
@@ -76,17 +76,17 @@ app.post('/apple/callback', passport.authenticate('apple', {failureRedirect: `${
 
 app.get('/google', passport.authenticate('google', { scope: ['email','profile'], accessType: 'offline', includeGrantedScopes: true, prompt: 'select_account' }));
 
-app.head('/google/callback', passport.authenticate('google', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
-	async (req: any, res: any) => {
-		const user = req.user;
+// app.head('/google/callback', passport.authenticate('google', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
+// 	async (req: any, res: any) => {
+// 		const user = req.user;
 
-		const token = generateToken({
-			id: user.id
-		});
+// 		const token = generateToken({
+// 			id: user.id
+// 		});
 
-		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
-	}
-);
+// 		res.redirect(`${process.env.DOMAIN_URL}#access_token=`+token);
+// 	}
+// );
 
 app.get('/google/callback', passport.authenticate('google', {failureRedirect: `${process.env.DOMAIN_URL}/auth/login` }),
   async (req: any, res: any) => {
