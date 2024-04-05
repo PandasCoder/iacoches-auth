@@ -23,31 +23,7 @@ export function configurePassportApple(passport: any) {
 
         const userData = await GeneralEndpoints.getUserByProvider({ loginProviderId: LOGIN_PROVIDERS.APPLE, providerId: user.sub});
         // if user is not registered, will return google user data and pre save it
-        if (!userData) {
-          // check if email is already used
-          const userWithEmail = await GeneralEndpoints.getUserLoginByEmail(user.email);
-
-          // if email is already used, will redirect to link account page
-          if (userWithEmail) {
-            const newUserLogin = await GeneralEndpoints.createUserLogin({ 
-              userId: userWithEmail.userId,
-              email: userWithEmail.email,
-              providerId: user.sub,
-              loginProviderId: LOGIN_PROVIDERS.APPLE,
-              accessToken,
-              refreshToken
-            });
-      
-            if (!newUserLogin) {
-              return done(null, { 
-                error: true,
-                code: 5000,
-                message: 'Error while signing up'
-              });
-            }
-
-            return done(null, { id: userWithEmail.userId });
-          }
+        if (!userData) {         
 
 					profile = JSON.parse(req.body.user);
 
@@ -81,4 +57,41 @@ export function configurePassportApple(passport: any) {
       }
     )
   );
+}
+
+export async function getAppleToken(idToken:any, Name:any) {
+  const user = parseJwt(idToken);        
+
+        const userData = await GeneralEndpoints.getUserByProvider({ loginProviderId: LOGIN_PROVIDERS.APPLE, providerId: user.sub});
+        // if user is not registered, will return google user data and pre save it
+        if (!userData) {          
+
+					var name = Name.split(" ");
+
+          const newUser = await GeneralEndpoints.createUser({ 
+            name: name[0],
+            lastname: name[1],
+            email: user.email
+          });
+
+          const newUserLogin = await GeneralEndpoints.createUserLogin({ 
+            userId: newUser.id,
+            email: newUser.email,
+            providerId: user.sub,
+            loginProviderId: LOGIN_PROVIDERS.APPLE
+          });
+          
+          if (!newUserLogin) {
+            return  { 
+              error: true,
+              code: 5000,
+              message: 'Error while signing up'
+            };
+          }
+
+          return { id: newUserLogin.userId };
+        }
+
+        return { id: userData.userId };
+  
 }

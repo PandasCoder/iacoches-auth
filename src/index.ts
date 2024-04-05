@@ -5,7 +5,7 @@ import passport from 'passport';
 import bodyParser from 'body-parser';
 import { generateToken } from './utils/generate-token';
 import { configurePassportGoogle } from './config/passport-google';
-import { configurePassportApple } from './config/passport-apple';
+import { configurePassportApple, getAppleToken } from './config/passport-apple';
 import { GeneralEndpoints, GetByProvider } from './api/general.endpoints';
 import { LOGIN_PROVIDERS } from './domain/login-providers.enum';
 
@@ -103,21 +103,17 @@ app.get('/google/callback', passport.authenticate('google', {failureRedirect: `$
 app.post('/apple/getToken',
 	async(req: any, res: any) => {
 
-		const userId = req.body.userId;
+		const idToken = req.body.idToken;
+		const name = req.body.name;
 
-		if(userId !== undefined){
+		if(idToken !== undefined){
 
-			const appleObject: GetByProvider = {
-				loginProviderId: LOGIN_PROVIDERS.APPLE,
-				providerId: userId
-			}
-			
-			const user = await GeneralEndpoints.getUserByProvider(appleObject);
+			const user = await getAppleToken(idToken,"")
 			
 			if(user !== undefined){
 
 				const token = generateToken({
-					id: user.userId
+					id: user.id
 				})
 		
 				res.send(token);
