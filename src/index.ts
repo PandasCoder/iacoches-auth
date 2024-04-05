@@ -122,8 +122,10 @@ app.post('/apple/getToken',
 		
 				res.send(token);
 			}
+			else{
+				res.send('nuai');
+			}
 		}
-		res.send('nuai');
 	}
 )
 
