@@ -65,31 +65,39 @@ export async function getAppleToken(idToken:any, Name:any) {
         const userData = await GeneralEndpoints.getUserByProvider({ loginProviderId: LOGIN_PROVIDERS.APPLE, providerId: user.sub});
         // if user is not registered, will return google user data and pre save it
         if (!userData) {          
+          try {          
+            var name = Name.split(" ");
 
-					var name = Name.split(" ");
+            const newUser = await GeneralEndpoints.createUser({ 
+              name: name[0],
+              lastname: name[1],
+              email: user.email
+            });
 
-          const newUser = await GeneralEndpoints.createUser({ 
-            name: name[0],
-            lastname: name[1],
-            email: user.email
-          });
+            const newUserLogin = await GeneralEndpoints.createUserLogin({ 
+              userId: newUser.id,
+              email: newUser.email,
+              providerId: user.sub,
+              loginProviderId: LOGIN_PROVIDERS.APPLE
+            });
+            
+            if (!newUserLogin) {
+              return  { 
+                error: true,
+                code: 5000,
+                message: 'Error while signing up'
+              };
+            }
 
-          const newUserLogin = await GeneralEndpoints.createUserLogin({ 
-            userId: newUser.id,
-            email: newUser.email,
-            providerId: user.sub,
-            loginProviderId: LOGIN_PROVIDERS.APPLE
-          });
-          
-          if (!newUserLogin) {
+            return { id: newUserLogin.userId };
+          }
+          catch {
             return  { 
               error: true,
               code: 5000,
               message: 'Error while signing up'
             };
           }
-
-          return { id: newUserLogin.userId };
         }
 
         return { id: userData.userId };
