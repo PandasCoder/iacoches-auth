@@ -110,21 +110,19 @@ app.post('/apple/getToken',
 
 			const user = await getAppleToken(idToken, name);
 			
-			if(user.error){
-				res.send('nuai');
+			if(user === undefined){
+				return res.send('nuai');
 			}
 
-			if(user !== undefined && !user.error){
+			if(user.error){				
+				return res.send('nuai');
+			}
 
-				const token = generateToken({
-					id: user.id
-				})
-		
-				res.send(token);
-			}
-			else{
-				res.send('nuai');
-			}
+			const token = generateToken({
+				id: user.id
+			})
+	
+			res.send(token);
 		}
 	}
 )
