@@ -25,31 +25,7 @@ export function configurePassportGoogle(passport: any) {
 
         const userData = await GeneralEndpoints.getUserByProvider({ loginProviderId: LOGIN_PROVIDERS.GOOGLE, providerId: profile.id});
         // if user is not registered, will return google user data and pre save it
-        if (!userData) {
-          // check if email is already used
-          const userWithEmail = await GeneralEndpoints.getUserLoginByEmail(profile._json.email);
-
-          // if email is already used, will redirect to link account page
-          if (userWithEmail) {
-            const newUserLogin = await GeneralEndpoints.createUserLogin({ 
-              userId: userWithEmail.userId,
-              email: userWithEmail.email,
-              providerId: userGoogle.providerId,
-              loginProviderId: LOGIN_PROVIDERS.GOOGLE,
-              accessToken,
-              refreshToken
-            });
-      
-            if (!newUserLogin) {
-              return done(null, { 
-                error: true,
-                code: 5000,
-                message: 'Error while signing up'
-              });
-            }
-
-            return done(null, { id: userWithEmail.userId });
-          }
+        if (!userData) {          
 
           const newUser = await GeneralEndpoints.createUser({ 
             name: userGoogle.name,
