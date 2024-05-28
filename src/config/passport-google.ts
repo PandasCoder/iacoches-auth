@@ -50,21 +50,6 @@ export function configurePassportGoogle(passport: any) {
             });
           }
 
-          const newMembership = await GeneralEndpoints.createUserMembership({
-            userId: newUser.id,
-            membershipTypeId: 1,
-            startDate: Date.now(),
-            endDate: new Date(new Date(8640000000000000)).getTime()
-          });
-
-          if (!newMembership) {
-            return done(null, { 
-              error: true,
-              code: 5000,
-              message: 'Error while signing up'
-            });
-          }
-
           return done(null, { id: newUserLogin.userId });
         }
 

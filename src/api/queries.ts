@@ -36,11 +36,3 @@ export const operationInsertUser = `
     }
   }
 `;
-
-export const operationInsertUserMembership = `
-  mutation CreateUserMembership($object: memberships_insert_input = {}) {
-    newMembership: insert_memberships_one(object: $object) {
-      id
-    }
-  }
-`;
