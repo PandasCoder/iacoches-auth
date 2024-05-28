@@ -1,6 +1,6 @@
 import { LOGIN_PROVIDERS } from "../domain/login-providers.enum";
 import { iacochesGraphQL } from "./iacochesApi";
-import { operationGetUser, operationInsertUser } from "./queries";
+import { operationGetUser, operationInsertUser, operationInsertUserMembership } from "./queries";
 
 export interface RequestError {
   response: {
@@ -101,10 +101,31 @@ const createUserLogin = async (object: any): Promise<any> => {
   }
 }
 
+const createUserMembership = async (object: any): Promise<any> => {
+  try {
+    const { data, errors } = await iacochesGraphQL(
+      operationInsertUserMembership,
+      'CreateUserMembership',
+      {
+        "object": object
+      }
+    )
+
+    if (errors) {
+      return errors[0];
+    }
+
+    return data.newMembership;
+  } catch (error) {
+    throw getError(error as RequestError)
+  }
+}
+
 
 export const GeneralEndpoints = {
   getUserByProvider,
   getUserLoginByEmail,
   createUser,
-  createUserLogin
+  createUserLogin,
+  createUserMembership
 }

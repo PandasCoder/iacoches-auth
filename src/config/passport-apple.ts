@@ -89,6 +89,21 @@ export async function getAppleToken(idToken:any, Name:any) {
               };
             }
 
+            const newMembership = await GeneralEndpoints.createUserMembership({
+              userId: newUser.id,
+              membershipTypeId: 1,
+              startDate: Date.now(),
+              endDate: new Date(new Date(8640000000000000)).getTime()
+            });
+  
+            if (!newMembership) {
+              return  { 
+                error: true,
+                code: 5000,
+                message: 'Error while signing up'
+              };
+            }
+
             return { id: newUserLogin.userId };
           }
           catch {
